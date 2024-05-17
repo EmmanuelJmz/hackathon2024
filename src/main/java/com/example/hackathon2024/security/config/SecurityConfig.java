@@ -36,7 +36,9 @@ public class SecurityConfig {
             "/api-greenpal/auth/event/events/{eventId}/participate/**",
             "/api-greenpal/auth/event/events/{eventId}/participate",
             "/api-greenpal/auth/event/user/{userId}/created",
-            "/api-greenpal/auth/event/user/{userId}/participating"
+            "/api-greenpal/auth/event/user/{userId}/participating",
+            "/api-greenpal/tipAi/chat",
+            "/api-greenpal/tip"
     };
 
     @Bean

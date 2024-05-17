@@ -2,7 +2,6 @@ package com.example.hackathon2024.model.eventImages;
 
 import com.example.hackathon2024.model.event.Event;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.twilio.rest.api.v2010.account.Application;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
