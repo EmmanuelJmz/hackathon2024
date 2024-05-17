@@ -1,13 +1,13 @@
-package com.example.hackathon2024;
+package com.javaqr.app_qr;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Hackathon2024ApplicationTests {
+class AppQrApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
