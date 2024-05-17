@@ -19,7 +19,7 @@ public class email {
     public void sendSimpleMessage(String to, String subject, String text) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setFrom("iadoptame@gmail.com");
+        helper.setFrom("noreplygreenpal@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(text, true);

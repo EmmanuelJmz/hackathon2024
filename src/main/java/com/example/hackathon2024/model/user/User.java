@@ -65,7 +65,11 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Event> events;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id")
+    @JsonIgnore
+    private Event event;
 }

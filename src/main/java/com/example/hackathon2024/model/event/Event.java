@@ -1,7 +1,10 @@
 package com.example.hackathon2024.model.event;
 
+import com.example.hackathon2024.model.eventImages.EventImages;
 import com.example.hackathon2024.model.medal.Medal;
 import com.example.hackathon2024.model.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,16 +27,19 @@ public class Event {
 
     private String description;
 
+    @Nullable
     private String imageUrl;
 
     private Date date;
 
-    @ElementCollection
-    private List<String> participants = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @Nullable
+    private List<User> participants;
 
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -41,4 +47,7 @@ public class Event {
     @JoinColumn(name = "medal_id", referencedColumnName = "id")
     private Medal medal;
 
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Nullable
+    private List<EventImages> images;
 }
