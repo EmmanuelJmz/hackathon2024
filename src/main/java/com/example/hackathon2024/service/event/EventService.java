@@ -41,8 +41,9 @@ public class EventService {
         Event event1 = new Event();
         String id = UUID.randomUUID().toString();
         String code = UUID.randomUUID().toString();
+        String code2 = code.substring(0, 7);
 
-        event1.setCode(code);
+        event1.setCode(code2);
         event1.setId(id);
         event1.setTitle(event.getTitle());
         event1.setDescription(event.getDescription());

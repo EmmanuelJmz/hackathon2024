@@ -25,9 +25,6 @@ public class Event {
 
     private String description;
 
-    @Nullable
-    private String imageUrl;
-
     private Date date;
 
     @OneToMany(fetch = FetchType.LAZY)
