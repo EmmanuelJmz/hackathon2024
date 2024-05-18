@@ -48,7 +48,7 @@ public class ImagesService {
     public String upload(MultipartFile multipartFile) {
         try {
             String uploadId = UUID.randomUUID().toString();
-            String shortId = uploadId.substring(0, 7);
+            String shortId = uploadId.substring(0, 30);
             String fileName = shortId + getExtension(Objects.requireNonNull(multipartFile.getOriginalFilename()));
             File file = convertToFile(multipartFile, fileName);
             String URL = uploadFile(file, fileName);
