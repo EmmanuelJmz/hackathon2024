@@ -1,5 +1,6 @@
 package com.example.hackathon2024.model.user;
 
+import com.example.hackathon2024.model.event.Event;
 import com.example.hackathon2024.model.role.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -52,9 +54,6 @@ public class User {
     @Column(nullable = false)
     private String coins;
 
-//    @JsonIgnore
-//    private String token;
-
     @Column(columnDefinition = "BOOL DEFAULT FALSE")
     private Boolean status;
 
@@ -64,4 +63,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role")
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Event> events;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id")
+    @JsonIgnore
+    private Event event;
 }

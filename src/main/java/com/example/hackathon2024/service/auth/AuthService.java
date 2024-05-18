@@ -52,14 +52,13 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setRole(role);
         newUser.setBlocked(true);
-        if (role.getName().equals("User")){
+        if (role.getName().equals("Client")){
             String filePath = "src/main/resources/welcome.html";
             String htmlContent = new String(Files.readAllBytes(Paths.get(filePath)));
             email.sendSimpleMessage(user.getEmail(), "Bienvenido :)", htmlContent);
         } else {
             newUser.setStatus(true);
         }
-
         BeanUtils.copyProperties(user, newUser);
         return userRepository.save(newUser);
     }
