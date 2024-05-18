@@ -3,14 +3,12 @@ package com.example.hackathon2024.model.event;
 import com.example.hackathon2024.model.eventImages.EventImages;
 import com.example.hackathon2024.model.medal.Medal;
 import com.example.hackathon2024.model.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +37,11 @@ public class Event {
 
     private String address;
 
+    private String code;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -50,4 +53,9 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
     private List<EventImages> images;
+
+    public enum Status {
+        EN_PROGRESO,
+        TERMINADO
+    }
 }

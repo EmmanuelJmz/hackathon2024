@@ -13,4 +13,5 @@ public class EventDto {
     private String address;
     private String userId;
     private Medal medal;
+    private String code;
 }

@@ -5,6 +5,7 @@ import com.example.hackathon2024.model.event.EventDto;
 import com.example.hackathon2024.model.event.EventRepository;
 import com.example.hackathon2024.model.eventImages.EventImages;
 import com.example.hackathon2024.model.eventImages.EventImagesRepository;
+import com.example.hackathon2024.model.medal.Medal;
 import com.example.hackathon2024.model.user.User;
 import com.example.hackathon2024.model.user.UserRepository;
 import com.example.hackathon2024.service.images.ImagesService;
@@ -16,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +28,6 @@ public class EventService {
     private final UserRepository userRepository;
     private final ImagesService imagesService;
     private final EventImagesRepository eventImagesRepository;
-
 
     @Transactional(rollbackFor = {SecurityException.class})
     public ApiResponse<Event> createEvent(EventDto event, List<MultipartFile> files){
@@ -42,13 +40,21 @@ public class EventService {
 
         Event event1 = new Event();
         String id = UUID.randomUUID().toString();
+        String code = UUID.randomUUID().toString();
+
+        event1.setCode(code);
         event1.setId(id);
         event1.setTitle(event.getTitle());
         event1.setDescription(event.getDescription());
         event1.setDate(event.getDate());
         event1.setUser(user);
         event1.setAddress(event.getAddress());
+        event1.setStatus(Event.Status.EN_PROGRESO);
         event1.setMedal(event.getMedal());
+
+        Medal medal = new Medal();
+        String idMedal = UUID.randomUUID().toString();
+        medal.setId(idMedal);
 
         Event saveEvent = eventRepository.save(event1);
 
@@ -98,6 +104,23 @@ public class EventService {
         }
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public ApiResponse<Event> update(String id, EventDto eventDto) {
+        Optional<Event> event = eventRepository.findById(id);
+        if (event.isPresent()) {
+            Event event1 = event.get();
+            event1.setStatus(Event.Status.TERMINADO);
+            eventRepository.save(event1);
+            return new ApiResponse<>(
+                    event1, false, HttpStatus.OK, "Evento finalizado correctamente"
+            );
+        }else {
+            return new ApiResponse<>(
+                    null, true, HttpStatus.NOT_FOUND, "Evento no encontrado"
+            );
+        }
+    }
+
     @Transactional(readOnly = true)
     public ApiResponse<List<Event>> eventsCreatedBy(String userId) {
         List<Event> events = eventRepository.findByUserId(userId);
@@ -125,5 +148,38 @@ public class EventService {
         }
     }
 
+    private static final int COINS_TO_GRANT = 10;
 
+    private final Set<String> redeemedCodes = new HashSet<>();
+
+    @Transactional
+    public ApiResponse<String> verifyEventCode(String code, String userId) {
+
+        Event event = eventRepository.findByCode(code)
+                .orElseThrow();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow();
+
+        assert event.getParticipants() != null;
+        if (!event.getParticipants().contains(user)) {
+            return new ApiResponse<>(null, true, HttpStatus.FORBIDDEN, "No estás participando en este evento");
+        }
+
+        if (!event.getCode().equals(code)) {
+            return new ApiResponse<>(null, true, HttpStatus.BAD_REQUEST, "Código de evento incorrecto");
+        }
+
+        String uniqueCodeIdentifier = code + ":" + userId;
+        if (redeemedCodes.contains(uniqueCodeIdentifier)) {
+            return new ApiResponse<>(null, true, HttpStatus.BAD_REQUEST, "Código de evento ya utilizado");
+        }
+
+        user.setCoins(user.getCoins() + COINS_TO_GRANT);
+        userRepository.save(user);
+
+        redeemedCodes.add(uniqueCodeIdentifier);
+
+        return new ApiResponse<>(null, false, HttpStatus.OK, "Felicidades, ganaste 10 monedas");
+    }
 }
